@@ -63,19 +63,3 @@
 #### <span class="underline">結論</span>
 
 - SQLによる問い合わせ結果（大きなサイズ）をExcelファイルに書き込める
-
----
-
-# SlideCcc
-
----
-
-### SlideCcc
-
----
-
-#### SlideCcc
-
----
-
-##### SlideCcc
