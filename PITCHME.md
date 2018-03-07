@@ -2,24 +2,67 @@
 
 ---
 
-#### SlideBbb
+#### 自己紹介
 
-```
-scalaVersion := "2.13.4"
+- インターネット広告代理店でウェブアプリケーションを開発しています
+- We are hiring! |
 
-libraryDependencies ++= Seq(
-  "org.apache.poi"    %  "poi"                     % "3.16",
-  "org.apache.poi"    %  "poi-ooxml"               % "3.16",
-  "com.monitorjbl"    %  "xlsx-streamer"           % "1.2.0",
-  "com.typesafe.akka" %% "akka-stream"             % "2.5.6",
-  "org.scalikejdbc"   %% "scalikejdbc"             % "3.2.0",
-  "org.scalikejdbc"   %% "scalikejdbc-config"      % "3.2.0",
-  "org.scalikejdbc"   %% "scalikejdbc-streams"     % "3.2.0",
-  "com.h2database"    %  "h2"                      % "1.4.196",
-  "ch.qos.logback"    %  "logback-classic"         % "1.2.3"
-)
-```
-@[1](scala versionを指定する)
+---
+
+#### 今日話すこと（要約）
+
+- SQLによる問い合わせ結果（大きなサイズ）をExcelファイルに書き込めるか？
+
+---
+
+#### 今日話さない（話せない）こと
+
+- akka-streamsの仕組み（マテリアライズなど）
+- akka-streamsのAPI
+
+---
+
+#### 目次
+
+- ストリームとは
+  - ストリーム
+  - プロデューサー
+  - コンシューマー
+- akka-streamsとは
+- ケース①テキストファイルのコピー
+  - Iterator
+- ケース②SQLによる問い合わせ結果をテキストファイルに書き込む
+  - 非ストリームな問い合わせ結果
+  - ストリームな問い合わせ結果
+- ケース③SQLによる問い合わせ結果をExcelファイルに書き込む
+  - XSSF
+  - SXXF
+
+---
+
+#### ストリームとは
+
+---
+
+#### akka-streamsとは
+
+---
+
+#### ケース①テキストファイルのコピー
+
+---
+
+#### ケース②SQLによる問い合わせ結果をテキストファイルに書き込む
+
+---
+
+#### ケース③SQLによる問い合わせ結果をExcelファイルに書き込む
+
+---
+
+#### 結論
+
+- SQLによる問い合わせ結果（大きなサイズ）をExcelファイルに書き込める
 
 ---
 
