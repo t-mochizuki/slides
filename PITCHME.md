@@ -2,12 +2,12 @@
 
 ---
 
-## AAA
+## SlideAAA
+
+---?code=build.sbt
+
+リポジトリ内のbuild.sbtを読み込む
 
 ---
 
-## BBB
-
----
-
-## CCC
+## SlideAAA
