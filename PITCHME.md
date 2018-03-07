@@ -9,20 +9,20 @@
 
 ---
 
-#### 今日話すこと（要約）
+#### <span class="underline">今日話すこと（要約）</span>
 
 - SQLによる問い合わせ結果（大きなサイズ）をExcelファイルに書き込めるか？
 
 ---
 
-#### 今日話さない（話せない）こと
+#### <span class="underline">今日話さない（話せない）こと</span>
 
 - akka-streamsの仕組み（マテリアライズなど）
 - akka-streamsのAPI
 
 ---
 
-#### 目次
+#### <span class="underline">目次</span>
 
 - ストリームとは
   - ストリーム
@@ -40,27 +40,27 @@
 
 ---
 
-#### ストリームとは
+#### <span class="underline">ストリームとは</span>
 
 ---
 
-#### akka-streamsとは
+#### <span class="underline">akka-streamsとは</span>
 
 ---
 
-#### ケース①テキストファイルのコピー
+#### <span class="underline">ケース①テキストファイルのコピー</span>
 
 ---
 
-#### ケース②SQLによる問い合わせ結果をテキストファイルに書き込む
+#### <span class="underline">ケース②SQLによる問い合わせ結果をテキストファイルに書き込む</span>
 
 ---
 
-#### ケース③SQLによる問い合わせ結果をExcelファイルに書き込む
+#### <span class="underline">ケース③SQLによる問い合わせ結果をExcelファイルに書き込む</span>
 
 ---
 
-#### 結論
+#### <span class="underline">結論</span>
 
 - SQLによる問い合わせ結果（大きなサイズ）をExcelファイルに書き込める
 
