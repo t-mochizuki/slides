@@ -1,8 +1,4 @@
-# akka-streamsを使ってOut of memory errorを回避する話
-
----
-
-## SlideAaa
+## akka-streamsを使ってOut of memory errorを回避する話
 
 ---
 
@@ -27,7 +23,7 @@ libraryDependencies ++= Seq(
 
 ---
 
-## SlideCcc
+# SlideCcc
 
 ---
 
