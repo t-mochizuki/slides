@@ -25,22 +25,18 @@
 #### <span class="underline">目次</span>
 
 - ストリームとは
-  - ストリーム
-  - プロデューサー
-  - コンシューマー
 - akka-streamsとは
 - ケース①テキストファイルのコピー
-  - Iterator
 - ケース②SQLによる問い合わせ結果をテキストファイルに書き込む
-  - 非ストリームな問い合わせ結果
-  - ストリームな問い合わせ結果
 - ケース③SQLによる問い合わせ結果をExcelファイルに書き込む
-  - XSSF
-  - SXXF
 
 ---
 
 #### <span class="underline">ストリームとは</span>
+
+- ストリーム
+- プロデューサー
+- コンシューマー
 
 ---
 
@@ -50,13 +46,21 @@
 
 #### <span class="underline">ケース①テキストファイルのコピー</span>
 
+- Iterator
+
 ---
 
 #### <span class="underline">ケース②SQLによる問い合わせ結果をテキストファイルに書き込む</span>
 
+- 非ストリームな問い合わせ結果
+- ストリームな問い合わせ結果
+
 ---
 
 #### <span class="underline">ケース③SQLによる問い合わせ結果をExcelファイルに書き込む</span>
+
+- POI-XSSF
+- POI-SXXF
 
 ---
 
