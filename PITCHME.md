@@ -1,4 +1,4 @@
-## akka-streamsを使ってOut of memory errorを回避する話
+## Akka Streamsを使ってOutOfMemoryErrorを回避する話
 
 ---
 
@@ -17,15 +17,15 @@
 
 #### <span class="underline">今日話さない（話せない）こと</span>
 
-- akka-streamsの仕組み（マテリアライズなど）
-- akka-streamsのAPI
+- Akka Streamsの仕組み（マテリアライズなど）
+- Akka StreamsのAPI
 
 ---
 
 #### <span class="underline">目次</span>
 
 - ストリームとは
-- akka-streamsとは
+- Akka Streamsとは
 - ケース①テキストファイルのコピー
 - ケース②SQLによる問い合わせ結果をテキストファイルに書き込む
 - ケース③SQLによる問い合わせ結果をExcelファイルに書き込む
@@ -34,13 +34,16 @@
 
 #### <span class="underline">ストリームとは</span>
 
-- ストリーム
-- プロデューサー
-- コンシューマー
+- 終わりがない要素の配列のようなもの
+- コンシューマーがストリームにデータを要求して |
+- プロデューサーがストリームにデータを供給する |
 
 ---
 
-#### <span class="underline">akka-streamsとは</span>
+#### <span class="underline">Akka Streamsとは</span>
+
+- ストリームを取り扱うことができるライブラリ
+- つまり、有限のバッファーで無限のデータを取り扱うことができる |
 
 ---
 
