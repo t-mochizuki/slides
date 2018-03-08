@@ -153,7 +153,7 @@ object Main extends App {
 @[19-27](テーブルを作成する)
 @[29-39](50万件のレコードを登録する)
 @[43-49](50万件のレコードを取得する)
-@[43-49](OutOfMemoryErrorになります)
+@[43-49](SeqなのでOutOfMemoryErrorになります)
 
 +++
 
