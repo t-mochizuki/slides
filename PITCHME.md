@@ -35,8 +35,8 @@
 #### <span class="underline">ストリームとは</span>
 
 - 終わりがない要素の配列のようなもの
-- コンシューマーがストリームにデータを要求して |
-- プロデューサーがストリームにデータを供給する |
+- コンシューマーがデータをストリームに要求して |
+- プロデューサーがデータをストリームに供給する |
 
 ---
 
@@ -50,6 +50,35 @@
 #### <span class="underline">ケース①テキストファイルのコピー</span>
 
 - Iterator
+
++++
+
+#### <span class="underline">Iterator</span>
+
+Akka Streamsを使う必要はありません
+
+```
+import java.io.{File, FileOutputStream, OutputStreamWriter}
+import scala.io.Source
+
+// JAVA_OPTS="-Xmx50M" sbt run
+object Main extends App {
+  val input = Source.fromFile("./input.txt")
+  val xs: Iterator[String] = input.getLines
+
+  val tempFile = File.createTempFile("output", ".txt")
+  println(tempFile.getPath)
+  val fileOutputStream = new FileOutputStream(tempFile)
+  val outputStreamWriter = new OutputStreamWriter(fileOutputStream, "UTF-8")
+
+  xs.foreach(x => outputStreamWriter.write(s"$x\n"))
+
+  outputStreamWriter.close()
+  fileOutputStream.close()
+}
+```
+@[6](ファイルサイズが50MB以上のファイルを使います)
+@[7](イテレーターなのでOutOfMemoryErrorになりません)
 
 ---
 
