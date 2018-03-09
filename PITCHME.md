@@ -147,8 +147,7 @@ object Main extends App {
   println("Main end")
 }
 ```
-@[4-8](entity objectを定義する)
-@[10](extractorを定義する)
+@[4-10](entity objectとextractorを定義する)
 @[17](データベース接続をセットアップする)
 @[19-27](テーブルを作成する)
 @[29-39](50万件のレコードを登録する)
