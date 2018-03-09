@@ -217,9 +217,10 @@ object Main extends App {
 ```
 @[1](entity objectとextractorは同じパッケージにあります)
 @[28-37](Sourceを用意します)
+@[28-37](ストリームな問い合わせ結果のためにScalikeJDBC Streamsを使います)
 @[39-41](Sinkを用意します)
-@[43-50](SourceとSinkの間にFlowを並べます)
-@[46](型合わせのためにStringをByteStringに変換します)
+@[43-50](問い合わせ結果を加工するためにSourceとSinkの間にFlowを並べます)
+@[46](型合わせのためにStringをByteStringに変換しています)
 @[43-50](そして実行します)
 @[43-50](ストリームなのでOutOfMemoryErrorになりません)
 
@@ -299,15 +300,17 @@ object Main extends App {
   println("Main end")
 }
 ```
+@[1](entity objectとextractorは同じパッケージにあります)
 @[25-34](Sourceを用意します)
 @[36-38](Sinkのようなものを用意します)
-@[40](ストリームなのでOutOfMemoryErrorになりません)
-@[41](行を指定するために各要素に添字を追加します)
-@[42-48](書き込む値とその値の書き込み先を指定します)
-@[42-48](SXSSFなのでOutOfMemoryErrorになりません)
+@[40-48](SourceとSinkのようなものの間にFlowを並べます)
+@[41](行を指定するために各要素に添字を追加しています)
+@[42-48](書き込む値と書き込み先を指定します)
+@[42-48](POI-SXSSFなのでOutOfMemoryErrorになりません)
 
 ---
 
 #### <span class="underline">結論</span>
 
+- 最大ヒープサイズを小さくすればOutOfMemoryErrorになる
 - SQLによる問い合わせ結果（大きなサイズ）をExcelファイルに書き込める
