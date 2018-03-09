@@ -227,23 +227,6 @@ object Main extends App {
 
 #### <span class="underline">ケース③SQLによる問い合わせ結果をExcelファイルに書き込む</span>
 
-- POI-XSSF
-- POI-SXSSF
-
-+++
-
-#### <span class="underline">POI-XSSF</span>
-
-```
-```
-
-+++
-
-#### <span class="underline">POI-SXSSF</span>
-
-```
-```
-
 ---
 
 #### <span class="underline">結論</span>
