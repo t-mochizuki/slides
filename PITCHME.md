@@ -24,15 +24,15 @@
 
 #### <span class="underline">目次</span>
 
-- ストリームとは
-- Akka Streamsとは
+- ストリームとは？
+- Akka Streamsとは？
 - ケース①テキストファイルのコピー
 - ケース②SQLによる問い合わせ結果をテキストファイルに書き込む
 - ケース③SQLによる問い合わせ結果をExcelファイルに書き込む
 
 ---
 
-#### <span class="underline">ストリームとは</span>
+#### <span class="underline">ストリームとは？</span>
 
 - 終わりがない要素の配列のようなもの
 - コンシューマーがデータをストリームに要求して |
@@ -40,7 +40,7 @@
 
 ---
 
-#### <span class="underline">Akka Streamsとは</span>
+#### <span class="underline">Akka Streamsとは？</span>
 
 - ストリームを取り扱うことができるライブラリ
 - つまり、有限のバッファーで無限のデータを取り扱うことができる |
