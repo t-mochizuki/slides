@@ -5,62 +5,105 @@
 #### <span class="underline">自己紹介</span>
 
 - インターネット広告代理店でウェブアプリケーションを開発しています
-- We are hiring! |
+- 主に広告効果計測ツールを開発しています
+- [t-mochizuki・GitHub](https://github.com/t-mochizuki)
 
 ---
 
-#### <span class="underline">今日話すこと（要約）</span>
+#### <span class="underline">今日話すこと</span>
 
-- SQLによる問い合わせ結果（大きなサイズ）をExcelファイルに書き込めるか？
+- 大きなサイズのSQL問い合わせ結果をExcelに書き込む方法について話します
+- そして、そのことから分かったこと・気が付いたことについて話します
 
 ---
 
-#### <span class="underline">今日話さない（話せない）こと</span>
+#### <span class="underline">今日話さないこと</span>
 
-- Akka Streamsの仕組み（マテリアライズなど）
-- Akka StreamsのAPI
+- 利用したライブラリの詳細については話しません
 
 ---
 
 #### <span class="underline">目次</span>
 
-- ストリームとは？
-- Akka Streamsとは？
-- ケース①テキストファイルのコピー
-- ケース②SQLによる問い合わせ結果をテキストファイルに書き込む
-- ケース③SQLによる問い合わせ結果をExcelファイルに書き込む
+- なぜ？
+- どのようにした？
+- 分かったこと・気付いたこと
+  - 省メモリ場面でIteratorはすごく役に立つ！
+  - なんでコンパイルエラーになるの？
+
+---
+
+#### <span class="underline">なぜ？</span>
+
+- レポートを作成するバッチ処理でOutOfMemoryErrorが起こるようになったからです
+- そのレポートのフォーマットは複数あり、Excelもありました
+- そのため、大きなサイズのSQL問い合わせ結果をExcelに書き込む必要がありました
+- こういうときにはストリーム化するのが良さそうだったので試してみました
 
 ---
 
 #### <span class="underline">ストリームとは？</span>
 
-- 終わりがない要素の配列のようなもの
-- コンシューマーがデータをストリームに要求して |
-- プロデューサーがデータをストリームに供給します |
+![Stream](assets/Stream.svg)
+
+- 終わりがない要素の配列のようなもので
+- Subscriber（または、コンシューマー）がデータを要求して |
+- Publisher（または、プロデューサー）がデータを供給します |
 
 ---
 
 #### <span class="underline">Akka Streamsとは？</span>
 
-- ストリームを取り扱うことができるライブラリ
+- ストリームを取り扱うことができるライブラリです
 - つまり、有限のバッファーで無限のデータを取り扱うことができます |
 
 ---
 
-#### <span class="underline">ケース①テキストファイルのコピー</span>
+#### <span class="underline">どのようにした？</span>
 
-- Iterator
+![Example](assets/Example.svg)
 
-+++
+- PublisherにScalikeJDBC Streams、SubscriberにPOI SXSSFを使うようにしました
+- サンプル・ソースコードを割愛しますが、リポジトリへのリンクのみを紹介します
+- [t-mochizuki/scalikejdbc-example at topic-excel+streams-3.2.0](https://github.com/t-mochizuki/scalikejdbc-example/tree/topic-excel%2Bstreams-3.2.0)
+- ここでは少しだけ使ったライブラリを紹介します
 
-#### <span class="underline">Iterator</span>
+---
 
-OutOfMemoryErrorになりません！
+#### <span class="underline">ScalikeJDBC Streamsとは？（1）</span>
+
+> scalikejdbc-streamsは、全てのResultSetを読み込まずにDBがサポートするCURSORなどの仕組みを使ってストリーム処理を行えるよう設計されたDBアクセスのためのモジュールです。
+
+- [ScalikeJDBC streamsモジュールの使い方解説 - yoskhdia's diary](http://yoskhdia.hatenablog.com/entry/2017/05/20/155847)
+
+---
+
+#### <span class="underline">ScalikeJDBC Streamsとは？（2）</span>
+
+> Since ScalikejDBC 3.0, we support the Publisher of Reactive Streams to subscribe a stream from a database query.
+
+- [Reactive Streams Support - ScalikeJDBC](http://scalikejdbc.org/documentation/reactivestreams-support.html)
+
+---
+
+#### <span class="underline">POI SXSSFとは？</span>
+
+> Streaming version of XSSFWorkbook implementing the "BigGridDemo" strategy.
+
+- [SXSSFWorkbook (POI API Documentation)](https://poi.apache.org/apidocs/org/apache/poi/xssf/streaming/SXSSFWorkbook.html)
+
+---
+
+#### <span class="underline">分かったこと・気が付いたこと</span>
+
+- 省メモリ場面でIteratorはすごく役に立つ！
+- なんでコンパイルエラーになるの？
+
+---
+
+#### <span class="underline">省メモリ場面でIteratorはすごく役に立つ！</span>
 
 ```
-import java.io.{File, FileOutputStream, OutputStreamWriter}
-import scala.io.Source
-
 // JAVA_OPTS="-Xmx50M" sbt run
 object Main extends App {
   val input = Source.fromFile("./input.txt")
@@ -77,240 +120,80 @@ object Main extends App {
   fileOutputStream.close()
 }
 ```
-@[6](ファイルサイズが50MB以上のファイルを使います)
-@[7](イテレーターなのでOutOfMemoryErrorになりません)
+@[3](ファイルサイズが50MB以上のファイルを使います)
+@[4](イテレーターなのでOutOfMemoryErrorになりません)
+@[4](一方、toSeqでイテレータをシーケンスに変換するとOutOfMemoryErrorになります)
+@[4](興味がある方はお試し下さい)
 
 ---
 
-#### <span class="underline">ケース②SQLによる問い合わせ結果をテキストファイルに書き込む</span>
+#### <span class="underline">なんでコンパイルエラーになるの？（1）</span>
 
-- 非ストリームな問い合わせ結果
-- ストリームな問い合わせ結果
-
-+++
-
-#### <span class="underline">非ストリームな問い合わせ結果</span>
-
-OutOfMemoryErrorになります！
+![Example](assets/Example2_1.svg)
 
 ```
-import scalikejdbc._
-import scalikejdbc.config._
-
-case class Emp(
-  id: Long,
-  name: String,
-  createdAt: java.time.ZonedDateTime
-)
-
-object Emp extends SQLSyntaxSupport[Emp]
-
-// JAVA_OPTS="-Xmx80M" sbt run
-object Main extends App {
-
-  println("Main start")
-
-  DBs.setup()
-
-  DB localTx { implicit session =>
-    sql"""
-    create table emp (
-      id serial not null primary key,
-      name varchar(64) not null,
-      created_at timestamp not null
-    )
-    """.execute.apply()
+source
+  .map(entity => s"${entity.id}, ${entity.name}, ${entity.createdAt}\n")
+  .runWith(sink)
+  .andThen {
+    case _ => system.terminate
   }
-
-  val column = Emp.column
-  1 to 500000 foreach { id =>
-    DB localTx { implicit s =>
-      withSQL {
-        insert.into(Emp).namedValues(
-          column.id -> id,
-          column.name -> s"taro$id",
-          column.createdAt -> sqls.currentTimestamp)
-      }.update.apply()
-    }
-  }
-
-
-  val emp = Emp.syntax("emp")
-  val result = DB localTx { implicit s =>
-    withSQL {
-      selectFrom(Emp as emp)
-    }.map { rs =>
-      Emp(rs.get(emp.resultName.id), rs.get(emp.resultName.name), rs.get(emp.resultName.createdAt))
-    }.list.apply()
-  }
-
-  println("Main end")
-}
 ```
-@[4-10](entity objectとextractorを定義します)
-@[17](データベース接続をセットアップします)
-@[19-27](テーブルを作成します)
-@[30-39](50万件のレコードを登録します)
-@[43-49](50万件のレコードを取得します)
-@[43-49](SeqなのでOutOfMemoryErrorになります)
-
-+++
-
-#### <span class="underline">ストリームな問い合わせ結果</span>
-
-OutOfMemoryErrorになりません！
-
-```
-package example
-
-import akka.NotUsed
-import akka.actor.ActorSystem
-import akka.stream.{ActorMaterializer, IOResult}
-import akka.stream.scaladsl.{FileIO, Sink, Source}
-import akka.util.ByteString
-import java.io.File
-import java.nio.file.StandardOpenOption._
-
-import scalikejdbc._
-import scalikejdbc.config._
-import scalikejdbc.streams._
-
-import scala.concurrent.Future
-
-// JAVA_OPTS="-Xmx80M" sbt run
-object Main extends App {
-
-  println("Main start")
-
-  DBs.setup()
-
-  implicit val system = ActorSystem("system")
-  implicit val materializer = ActorMaterializer()
-  implicit val dispatcher = system.dispatcher
-
-  // source
-  val emp = Emp.syntax("emp")
-  val databasePublisher: DatabasePublisher[Emp] = DB readOnlyStream {
-    withSQL {
-      selectFrom(Emp as emp)
-    }.map { rs =>
-      Emp(rs.get(emp.resultName.id), rs.get(emp.resultName.name), rs.get(emp.resultName.createdAt))
-    }.iterator()
-  }
-  val source: Source[Emp, NotUsed] = Source.fromPublisher(databasePublisher)
-
-  // sink
-  val output = new File("taro.csv")
-  val sink: Sink[ByteString, Future[IOResult]] = FileIO.toPath(output.toPath, options = Set(CREATE, WRITE, APPEND))
-
-  // run
-  source
-    .map(entity => s"${entity.id}, ${entity.name}, ${entity.createdAt}\n")
-    .map(ByteString(_))
-    .runWith(sink)
-    .andThen {
-      case _ => system.terminate
-    }
-
-  println("Main end")
-}
-```
-@[1](entity objectとextractorは同じパッケージにあります)
-@[28-37](Sourceを用意します)
-@[28-37](ストリームな問い合わせ結果のためにScalikeJDBC Streamsを使います)
-@[39-41](Sinkを用意します)
-@[43-50](問い合わせ結果を加工するためにSourceとSinkの間にFlowを並べます)
-@[46](型合わせのためにStringをByteStringに変換しています)
-@[43-50](そして実行します)
-@[43-50](ストリームなのでOutOfMemoryErrorになりません)
+@[3](ここでtype mismatchでコンパイルエラーになります)
+@[3](検索してみたのですが、意外とSQL問い合わせ結果を使うケースが見つかりませんでした)
+@[3](そこで困ってしまったのですが、いろいろ試すことで解決することができました)
 
 ---
 
-#### <span class="underline">ケース③SQLによる問い合わせ結果をExcelファイルに書き込む</span>
+#### <span class="underline">なんでコンパイルエラーになるの？（2）</span>
 
-- ストリームな問い合わせ結果＋POI-SXSSF
-
-+++
-
-#### <span class="underline">ストリームな問い合わせ結果＋POI-SXSSF</span>
-
-OutOfMemoryErrorになりません！
+![Example](assets/Example2_2.svg)
 
 ```
-package example
-
-import akka.NotUsed
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.Source
-import java.io.{File, FileOutputStream}
-
-import org.apache.poi.xssf.streaming.SXSSFWorkbook
-import scalikejdbc._
-import scalikejdbc.config._
-import scalikejdbc.streams._
-
-// JAVA_OPTS="-Xmx125M" sbt run
-object Main extends App {
-
-  println("Main start")
-
-  DBs.setup()
-
-  implicit val system = ActorSystem("system")
-  implicit val materializer = ActorMaterializer()
-  implicit val dispatcher = system.dispatcher
-
-  // source
-  val databasePublisher: DatabasePublisher[Emp] = DB readOnlyStream {
-    val emp = Emp.syntax("emp")
-    withSQL {
-      selectFrom(Emp as emp)
-    }.map { rs =>
-      Emp(rs.get(emp.resultName.id), rs.get(emp.resultName.name), rs.get(emp.resultName.createdAt))
-    }.iterator()
+source
+  .map(entity => entity.id)
+  .runWith(sink)
+  .andThen {
+    case _ => system.terminate
   }
-  val source: Source[Emp, NotUsed] = Source.fromPublisher(databasePublisher)
-
-  // POI-SXSSF
-  val workbook = new SXSSFWorkbook
-  val sheet = workbook.createSheet("test1")
-
-  source
-    .zipWithIndex
-    .runForeach {
-      case (entity, rowIndex) =>
-        val row = sheet.createRow(rowIndex.toInt)
-        row.createCell(0).setCellValue(entity.id)
-        row.createCell(1).setCellValue(entity.name)
-        row.createCell(2).setCellValue(entity.createdAt.toString)
-    }
-    .andThen {
-      case _ => {
-        val output = File.createTempFile("taro", ".xlsx")
-        println(s"File path is ${output.getPath}")
-        val stream = new FileOutputStream(output)
-        workbook.write(stream)
-
-        stream.close
-        system.terminate
-      }
-    }
-
-  println("Main end")
-}
 ```
-@[1](entity objectとextractorは同じパッケージにあります)
-@[25-34](Sourceを用意します)
-@[36-38](Sinkのようなものを用意します)
-@[40-48](SourceとSinkのようなものの間にFlowを並べます)
-@[41](行を指定するために各要素に添字を追加しています)
-@[42-48](書き込む値と書き込み先を指定します)
-@[42-48](POI-SXSSFなのでOutOfMemoryErrorになりません)
+@[3](ここでtype mismatchでコンパイルエラーになります)
+@[3](しかし、少しエラーメッセージが変わります)
+@[3](そこで、ここではByteStringに変換する必要があることに気が付きました)
+
+---
+
+#### <span class="underline">なんでコンパイルエラーになるの？（3）</span>
+
+![Example](assets/Example2_3.svg)
+
+```
+source
+  .map(entity => s"${entity.id}, ${entity.name}, ${entity.createdAt}\n")
+  .map(ByteString(_))
+  .runWith(sink)
+  .andThen {
+    case _ => system.terminate
+  }
+```
+@[3](このようにするとコンパイルエラーになりません)
+@[4](ここでのSinkは入って来るByteString要素を与えられたfile pathに書き込むのでコンパイルエラーになっていました)
+
+- [t-mochizuki/scalikejdbc-example at topic-streams-3.2.0](https://github.com/t-mochizuki/scalikejdbc-example/tree/topic-streams-3.2.0)
 
 ---
 
 #### <span class="underline">結論</span>
 
-- 最大ヒープサイズを小さくすればOutOfMemoryErrorになる
-- SQLによる問い合わせ結果（大きなサイズ）をExcelファイルに書き込める
+- 同じような課題のときはストリーム化が有効
+- 省メモリ場面でIteratorはすごく役に立つ！
+- いつものように型合わせがある！？
+
+---
+
+#### <span class="underline">宣伝</span>
+
+- We are hiring!
+- フロントエンド、サーバサイド、インフラなど幅広く求人しています!
+- 興味がある方はお声掛け頂けると幸いです!
+
