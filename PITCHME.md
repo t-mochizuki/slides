@@ -21,7 +21,6 @@
 ![Example](assets/Example.svg)
 
 - 背景としては担当しているプロダクトのバッチ処理でOutOfMemoryErrorが起こるようになり、それを回避するためにストリーム化を検討している感じです
-- PublisherにScalikeJDBC Streams、Subscriberにストリーミング版のPOIを使ってみました
 - レコード数50万件、最大ヒープサイズ300MBで確認してみたところ、期待した通りOutOfMemoryErrorを回避できました
 - [t-mochizuki/scalikejdbc-example at topic-excel+streams-3.2.0](https://github.com/t-mochizuki/scalikejdbc-example/tree/topic-excel%2Bstreams-3.2.0)
 
