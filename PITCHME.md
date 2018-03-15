@@ -4,126 +4,34 @@
 
 #### <span class="underline">自己紹介</span>
 
-- インターネット広告代理店でウェブアプリケーションを開発しています
-- 主に広告効果計測ツールを開発しています
-- [t-mochizuki・GitHub](https://github.com/t-mochizuki)
+- ウェブサービスを開発しています
+- 広告の効果を計測するツールを開発していてサーバサイドを担当することが多いです
+- 趣味は散歩、読書、競技プログラミングです
 
 ---
 
 #### <span class="underline">今日話すこと</span>
 
-- 大きなサイズのSQL問い合わせ結果をExcelに書き込む方法について話します
-- そして、そのことから分かったこと・気が付いたことについて話します
+- Akka Streamsを使って、試してみたこと・困ったことについて話したいと思います
 
 ---
 
-#### <span class="underline">今日話さないこと</span>
-
-- 利用したライブラリの詳細については話しません
-
----
-
-#### <span class="underline">目次</span>
-
-- なぜ？
-- どのようにした？
-- 分かったこと・気付いたこと
-  - 省メモリ場面でIteratorはすごく役に立つ！
-  - なんでコンパイルエラーになるの？
-
----
-
-#### <span class="underline">なぜ？</span>
-
-- レポートを作成するバッチ処理でOutOfMemoryErrorが起こるようになったからです
-- そのレポートのフォーマットは複数あり、Excelもありました
-- そのため、大きなサイズのSQL問い合わせ結果をExcelに書き込む必要がありました
-- こういうときにはストリーム化するのが良さそうだったので試してみました
-
----
-
-#### <span class="underline">ストリームとは？</span>
-
-![Stream](assets/Stream.svg)
-
-- 終わりがない要素の配列のようなもので
-- Subscriber（または、コンシューマー）がデータを要求して |
-- Publisher（または、プロデューサー）がデータを供給します |
-
----
-
-#### <span class="underline">Akka Streamsとは？</span>
-
-- ストリームを取り扱うことができるライブラリです
-- つまり、有限のバッファーで無限のデータを取り扱うことができます |
-
----
-
-#### <span class="underline">どのようにした？</span>
+#### <span class="underline">試してみたこと</span>
 
 ![Example](assets/Example.svg)
 
-- PublisherにScalikeJDBC Streams、SubscriberにPOI SXSSFを使うようにしました
-- サンプル・ソースコードを割愛しますが、リポジトリへのリンクのみを紹介します
+- 背景としては担当しているプロダクトのバッチ処理でOutOfMemoryErrorが起こるようになり、それを回避するためにストリーム化を検討している感じです
+- PublisherにScalikeJDBC Streams、Subscriberにストリーミング版のPOIを使ってみました
+- レコード数50万件、最大ヒープサイズ300MBで確認してみたところ、期待した通りOutOfMemoryErrorを回避できました
 - [t-mochizuki/scalikejdbc-example at topic-excel+streams-3.2.0](https://github.com/t-mochizuki/scalikejdbc-example/tree/topic-excel%2Bstreams-3.2.0)
-- ここでは少しだけ使ったライブラリを紹介します
 
 ---
 
-#### <span class="underline">ScalikeJDBC Streamsとは？（1）</span>
+#### <span class="underline">困ったこと</span>
 
-> scalikejdbc-streamsは、全てのResultSetを読み込まずにDBがサポートするCURSORなどの仕組みを使ってストリーム処理を行えるよう設計されたDBアクセスのためのモジュールです。
-
-- [ScalikeJDBC streamsモジュールの使い方解説 - yoskhdia's diary](http://yoskhdia.hatenablog.com/entry/2017/05/20/155847)
-
----
-
-#### <span class="underline">ScalikeJDBC Streamsとは？（2）</span>
-
-> Since ScalikejDBC 3.0, we support the Publisher of Reactive Streams to subscribe a stream from a database query.
-
-- [Reactive Streams Support - ScalikeJDBC](http://scalikejdbc.org/documentation/reactivestreams-support.html)
-
----
-
-#### <span class="underline">POI SXSSFとは？</span>
-
-> Streaming version of XSSFWorkbook implementing the "BigGridDemo" strategy.
-
-- [SXSSFWorkbook (POI API Documentation)](https://poi.apache.org/apidocs/org/apache/poi/xssf/streaming/SXSSFWorkbook.html)
-
----
-
-#### <span class="underline">分かったこと・気が付いたこと</span>
-
-- 省メモリ場面でIteratorはすごく役に立つ！
-- なんでコンパイルエラーになるの？
-
----
-
-#### <span class="underline">省メモリ場面でIteratorはすごく役に立つ！</span>
-
-```
-// JAVA_OPTS="-Xmx50M" sbt run
-object Main extends App {
-  val input = Source.fromFile("./input.txt")
-  val xs: Iterator[String] = input.getLines
-
-  val tempFile = File.createTempFile("output", ".txt")
-  println(tempFile.getPath)
-  val fileOutputStream = new FileOutputStream(tempFile)
-  val outputStreamWriter = new OutputStreamWriter(fileOutputStream, "UTF-8")
-
-  xs.foreach(x => outputStreamWriter.write(s"$x\n"))
-
-  outputStreamWriter.close()
-  fileOutputStream.close()
-}
-```
-@[3](ファイルサイズが50MB以上のファイルを使います)
-@[4](イテレーターなのでOutOfMemoryErrorになりません)
-@[4](一方、toSeqでイテレータをシーケンスに変換するとOutOfMemoryErrorになります)
-@[4](興味がある方はお試し下さい)
+- Akka Streamsを使ってファイルコピーを試したあと、PublisherをScalikeJDBC Streamsにしたところエラーになってしまいました
+- ちゃんと公式ドキュメントを読んでいれば困ることはないかもしれませんが。。
+- 同じように困っているひとも居るかもしれないので紹介したいと思います
 
 ---
 
@@ -133,15 +41,15 @@ object Main extends App {
 
 ```
 source
-  .map(entity => s"${entity.id}, ${entity.name}, ${entity.createdAt}\n")
+  .map(employee => s"${employee.id}, ${employee.name}, ${employee.createdAt}\n")
   .runWith(sink)
   .andThen {
     case _ => system.terminate
   }
 ```
 @[3](ここでtype mismatchでコンパイルエラーになります)
-@[3](検索してみたのですが、意外とSQL問い合わせ結果を使うケースが見つかりませんでした)
-@[3](そこで困ってしまったのですが、いろいろ試すことで解決することができました)
+@[3](検索してみたのですが、同じようなケースを見つけることができませんでした)
+@[3](それで困ってしまったのですが、いろいろ試すことで解決することができました)
 
 ---
 
@@ -151,15 +59,16 @@ source
 
 ```
 source
-  .map(entity => entity.id)
+  .map(employee => employee.id)
   .runWith(sink)
   .andThen {
     case _ => system.terminate
   }
 ```
-@[3](ここでtype mismatchでコンパイルエラーになります)
+@[2](StringではなくLongにしてみました)
+@[3](それでもtype mismatchでコンパイルエラーになります)
 @[3](しかし、少しエラーメッセージが変わります)
-@[3](そこで、ここではByteStringに変換する必要があることに気が付きました)
+@[3](それで、ここでByteStringに変換する必要があるということに気が付くことができました)
 
 ---
 
@@ -169,25 +78,24 @@ source
 
 ```
 source
-  .map(entity => s"${entity.id}, ${entity.name}, ${entity.createdAt}\n")
+  .map(employee => s"${employee.id}, ${employee.name}, ${employee.createdAt}\n")
   .map(ByteString(_))
   .runWith(sink)
   .andThen {
     case _ => system.terminate
   }
 ```
-@[3](このようにするとコンパイルエラーになりません)
-@[4](ここでのSinkは入って来るByteString要素を与えられたfile pathに書き込むのでコンパイルエラーになっていました)
+@[3](このようにByteStringに変換するとコンパイルエラーになりません)
+@[4](コンパイルエラーの原因ですが、ここでのSinkは入って来るByteStringを与えられたfile pathに書き込むものでByteString以外が入って来ていたのでコンパイルエラーになっていました)
 
 - [t-mochizuki/scalikejdbc-example at topic-streams-3.2.0](https://github.com/t-mochizuki/scalikejdbc-example/tree/topic-streams-3.2.0)
 
 ---
 
-#### <span class="underline">結論</span>
+#### <span class="underline">まとめ</span>
 
-- 同じような課題のときはストリーム化が有効
-- 省メモリ場面でIteratorはすごく役に立つ！
-- いつものように型合わせがある！？
+- Akka Streamsを使ってストリーム化するとOutOfMemoryErrorを回避できる！
+- いつものように型合わせがある！
 
 ---
 
